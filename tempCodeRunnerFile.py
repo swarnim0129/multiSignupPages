@@ -3,14 +3,12 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///new_multi_formdata.db'  # Use SQLite for simplicity; change to your database URI
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///multi_formdata.db'  # Use SQLite for simplicity; change to your database URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
 class Base(DeclarativeBase):
     pass
-
-db = SQLAlchemy(model_class=Base)
-db.init_app(app)
 
 class FormData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -33,14 +31,14 @@ class FormData(db.Model):
         return f'<FormData {self.title}>'
 
 
+    
+
 # @app.before_first_request
 # def initialize():
 #     create_tables()
 
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    with app.app_context():
-        db.create_all()
     if request.method == 'POST':
         print("Form submitted")
         # Check if request.form has the correct data
